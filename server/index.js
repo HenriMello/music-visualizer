@@ -16,10 +16,13 @@ app.get("/audio", async (req, res) => {
 
   try {
     const info = await ytdl.getInfo(videoURL);
-    const format = ytdl.chooseFormat(info.formats, { quality: "highestaudio" });
+    const format = ytdl.filterFormats(info.formats, 'audioonly').find(f =>
+      f.mimeType.includes('audio/mp4')
+    );
+    
 
     res.setHeader("Content-Disposition", 'inline; filename="audio.mp3"');
-    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Content-Type", "audio/mp4");
     ytdl(videoURL, { format }).pipe(res);
   } catch (error) {
     console.error(error);
